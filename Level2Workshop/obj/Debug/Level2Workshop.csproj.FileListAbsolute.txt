@@ -1,0 +1,30 @@
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\bin\Debug\Level2Workshop.exe.config
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\bin\Debug\Level2Workshop.exe
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\bin\Debug\Level2Workshop.pdb
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\bin\Debug\AutoMapper.dll
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\bin\Debug\AutoMapper.Net4.dll
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\bin\Debug\StructureMap.dll
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\bin\Debug\AutoMapper.xml
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\bin\Debug\StructureMap.xml
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\obj\Debug\Level2Workshop.csprojResolveAssemblyReference.cache
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\obj\Debug\Level2Workshop.exe
+C:\dev\ITTraining\New folder\Level2Workshop\Level2Workshop\obj\Debug\Level2Workshop.pdb
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2Workshop\bin\Debug\Level2Workshop.exe.config
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2Workshop\obj\Debug\Level2Workshop.exe
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2Workshop\obj\Debug\Level2Workshop.pdb
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2Workshop\bin\Debug\Level2Workshop.exe
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2Workshop\bin\Debug\Level2Workshop.pdb
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2Workshop\bin\Debug\AutoMapper.xml
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2Workshop\bin\Debug\StructureMap.xml
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2Workshop\obj\Debug\Level2Workshop.csprojResolveAssemblyReference.cache
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\bin\Debug\Level2Workshop.exe.config
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\obj\Debug\Level2Workshop.exe
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\obj\Debug\Level2Workshop.pdb
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\bin\Debug\Level2Workshop.exe
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\bin\Debug\Level2Workshop.pdb
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\bin\Debug\AutoMapper.dll
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\bin\Debug\AutoMapper.Net4.dll
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\bin\Debug\StructureMap.dll
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\bin\Debug\AutoMapper.xml
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\bin\Debug\StructureMap.xml
+C:\dev\ITTraining\Level2Workshop\Level2Workshop\obj\Debug\Level2Workshop.csprojResolveAssemblyReference.cache

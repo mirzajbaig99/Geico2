@@ -1,0 +1,40 @@
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2WorkshopTests.dll
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2WorkshopTests.pdb
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2Workshop.exe
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\Moq.dll
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2Workshop.pdb
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\Moq.pdb
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\Moq.xml
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.xml
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\obj\Debug\Level2WorkshopTests.csprojResolveAssemblyReference.cache
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\obj\Debug\Level2WorkshopTests.dll
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\obj\Debug\Level2WorkshopTests.pdb
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\AutoMapper.dll
+C:\dev\ITTraining\New folder\Level2Workshop\Level2WorkshopTests\bin\Debug\AutoMapper.xml
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2WorkshopTests.dll
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2WorkshopTests.pdb
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2Workshop.exe
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\bin\Debug\Moq.dll
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\bin\Debug\AutoMapper.dll
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2Workshop.pdb
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\bin\Debug\Moq.pdb
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\bin\Debug\Moq.xml
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\bin\Debug\AutoMapper.xml
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\obj\Debug\Level2WorkshopTests.csprojResolveAssemblyReference.cache
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\obj\Debug\Level2WorkshopTests.dll
+C:\Users\u1dcer\Documents\Visual Studio 2013\Projects\Level2Workshop\Level2WorkshopTests\obj\Debug\Level2WorkshopTests.pdb
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\obj\Debug\Level2WorkshopTests.csprojResolveAssemblyReference.cache
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\obj\Debug\Level2WorkshopTests.dll
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\obj\Debug\Level2WorkshopTests.pdb
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2WorkshopTests.dll
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2WorkshopTests.pdb
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2Workshop.exe
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\Moq.dll
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\AutoMapper.dll
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\Level2Workshop.pdb
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\Moq.pdb
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\Moq.xml
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.xml
+C:\dev\ITTraining\Level2Workshop\Level2WorkshopTests\bin\Debug\AutoMapper.xml

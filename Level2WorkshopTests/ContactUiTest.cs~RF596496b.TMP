@@ -1,0 +1,707 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Level2Workshop;
+using Level2Workshop.Repositories.Def;
+
+namespace Level2WorkshopTests
+{
+    [TestClass]
+    [ExcludeFromCodeCoverage]
+    public class ContactsUiTest
+    {
+
+        private static MockRepository mockRepository;
+
+        [ClassInitialize]
+        public static void Setup(TestContext context)
+        {
+            mockRepository = new MockRepository(MockBehavior.Strict) { DefaultValue = DefaultValue.Mock };
+        }
+
+        [TestMethod]
+        public void ContactUiTest_ConstructorWithoutConsoleInterface()
+        {
+            //Arrange
+            //Act
+            var contactsUi = new ContactsUi();
+
+            //Assert
+            Assert.IsNotNull(contactsUi);
+            Assert.IsInstanceOfType(contactsUi, typeof(ContactsUi));
+        }
+
+        [TestMethod]
+        public void ContactUiTest_ExitWritesGoodbye()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "exit" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.Run();
+
+            //Assert
+            StringAssert.Contains(consoleInterface.Output, "Goodbye!\r\n");
+        }
+
+        [TestMethod]
+        public void ContactUiTest_BlankReturnsFalse()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(false, returnValue);
+        }
+
+        [TestMethod]
+        public void ContactUiTest_ExitReturnsFalse()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "exit" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(false, returnValue);
+        }
+
+        [TestMethod]
+        public void ContactUiTest_AddFriendSuccessfully()
+        {
+            //Arrange
+            var inputParms = new List<string>();
+            inputParms.AddRange(new[] { "add", "friend" });
+            inputParms.AddRange(FakeData.GetFriendContactData());
+
+            List<Contact> contacts = new List<Contact>();
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Add(It.IsAny<Contact>())).Returns(true)
+                .Callback((Contact x) => { contacts.Add(x); });
+            rep.Setup(r => r.ContainsKey(It.IsAny<int>())).Returns<int>(
+                x => (contacts.Where(w => w.TaxId == x).Count() > 0));
+
+            var consoleInterface = new FakeConsoleInterface(inputParms.ToArray());
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(true, returnValue);
+            Assert.AreEqual(typeof(FriendContact).Name, contacts[0].GetType().Name);
+            Assert.AreEqual("testname3", contacts[0].Name);
+            Assert.AreEqual("1/2/90", ((FriendContact)contacts[0]).Birthday);
+        }
+
+        [TestMethod]
+        public void ContactUiTest_AddWorkSuccessful()
+        {
+            //Arrange
+            var inputParms = new List<string>();
+            inputParms.AddRange(new[] { "add", "work" });
+            inputParms.AddRange(FakeData.GetWorkContactData());
+
+            List<Contact> contacts = new List<Contact>();
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Add(It.IsAny<Contact>())).Returns(true)
+                .Callback((Contact x) => { contacts.Add(x); });
+            rep.Setup(r => r.ContainsKey(It.IsAny<int>())).Returns<int>(
+                x => (contacts.Where(w => w.TaxId == x).Count() > 0));
+
+            var consoleInterface = new FakeConsoleInterface(inputParms.ToArray());
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(true, returnValue);
+            Assert.AreEqual(typeof(WorkContact).Name, contacts[0].GetType().Name);
+            Assert.AreEqual("www.mycompany.com", ((WorkContact)contacts[0]).Url);
+        }
+
+        [TestMethod]
+        public void ContactUiTest_AddCompanyNoUrlSuccessful()
+        {
+            //Arrange
+            var inputParms = new List<string>();
+            inputParms.AddRange(new[] { "add", "company" });
+            inputParms.AddRange(FakeData.GetCompanyContactData());
+
+            List<Contact> contacts = new List<Contact>();
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Add(It.IsAny<Contact>())).Returns(true)
+                .Callback((Contact x) => { contacts.Add(x); });
+            rep.Setup(r => r.ContainsKey(It.IsAny<int>())).Returns<int>(
+                x => (contacts.Where(w => w.TaxId == x).Count() > 0));
+
+            var consoleInterface = new FakeConsoleInterface(inputParms.ToArray());
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(true, returnValue);
+            Assert.AreEqual(typeof(CompanyContact).Name, contacts[0].GetType().Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_AddDuplicateTaxIdThrowsArgumentException()
+        {
+            //Arrange
+            List<Contact> contacts = new List<Contact>();
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Add(It.IsAny<Contact>())).Returns(true)
+                .Callback((Contact x) => { contacts.Add(x); });
+
+            rep.Setup(r => r.ContainsKey(It.IsAny<int>())).Returns<int>(
+                x => (contacts.Where(w => w.TaxId == x).Count() > 0));
+           
+            var consoleInterface = new FakeConsoleInterface(new[] { "add", "friend", "name", "1" });
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+            contactsUi.ProcessLineCommand();
+            var contact = contacts[0];
+            consoleInterface.UserInput = new Queue<string>(new[] { "add", "friend", "name", "1" });
+            contactsUi = new ContactsUi(consoleInterface);
+            
+            //Act Assert
+            contactsUi.ProcessLineCommand();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void ContactUiTest_AddNegativeTaxIdThrowsArgumentOutOfRangeException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "add", "friend", "name", "-1" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void ContactUiTest_AddLargeTaxIdThrowsArgumentOutOfRangeException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "add", "friend", "name", "1000000000" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_AddWithNoTypeThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "add" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        public void ContactUiTest_AddWithBadTaxIdThrowsException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "add", "friend", "name", "x" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.Run();
+
+            //Assert
+            StringAssert.Contains(consoleInterface.Output, "FormatException: Input string was not in a correct format.\r\n");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_AddWithBadTypeThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "add", "crazy", "type" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        public void ContactUiTest_EditFriendNewTaxIdSuccessful()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "edit", "1", "new name", "2" });
+            var contact = new FriendContact { Name = "name", TaxId = 1 };
+            
+            List<Contact> contacts = new List<Contact>() { contact };
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Get(It.IsAny<int>()))
+                .Returns((int x) => contacts.Where(w => w.TaxId == x).FirstOrDefault());
+               
+            rep.Setup(r => r.Add(It.IsAny<Contact>())).Returns(true)
+                .Callback((Contact x) => { contacts.Add(x); });
+
+            rep.Setup(r => r.Update(It.IsAny<Contact>(), It.IsAny<int>())).Returns(true)
+                .Callback<Contact, int>((x, y) => { contacts.Remove(contact); contacts.Add(x); });
+
+            rep.Setup(r => r.ContainsKey(It.IsAny<int>())).Returns<int>(
+               x => (contacts.Where(w => w.TaxId == x).Count() > 0));
+
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(true, returnValue);
+            Assert.AreEqual("new name", contacts[0].Name);
+            Assert.AreEqual(2, contacts[0].TaxId);
+        }
+
+        [TestMethod]
+        public void ContactUiTest_EditCompanySuccessful()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "edit", "1", "new name", "1", "", "", "www.newurl.com" });
+
+            var contact = new CompanyContact { Name = "name", TaxId = 1 };
+
+            List<Contact> contacts = new List<Contact>() { contact };
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Get(It.IsAny<int>()))
+                .Returns((int x) => contacts.Where(w => w.TaxId == x).FirstOrDefault());
+
+            rep.Setup(r => r.Update(It.IsAny<Contact>(), It.IsAny<int>())).Returns(true)
+                .Callback<Contact, int>((x, y) => { contacts.Remove(contact); contacts.Add(x); });
+
+            rep.Setup(r => r.ContainsKey(It.IsAny<int>())).Returns<int>(
+               x => (contacts.Where(w => w.TaxId == x).Count() > 0));
+
+            var contactsUi = new ContactsUi(consoleInterface,rep.Object);
+            
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(true, returnValue);
+            Assert.AreEqual("new name", contacts[0].Name);
+            Assert.AreEqual("www.newurl.com", ((CompanyContact)contacts[0]).Url);
+        }
+
+        [TestMethod]
+        public void ContactUiTest_EditWorkSuccessful()
+        {
+            //Arrange
+            var consoleInterface =
+                new FakeConsoleInterface(
+                    new[]
+                    {
+                        "edit", "1", "new name", "1", "", "", "new title", "new co", "NewEmail@noreply.com",
+                        "www.newurl.com"
+                    });
+
+            var contact = new WorkContact { Name = "name", TaxId = 1 };
+            List<Contact> contacts = new List<Contact>() { contact };
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Get(It.IsAny<int>()))
+                .Returns((int x) => contacts.Where(w => w.TaxId == x).FirstOrDefault());
+
+            rep.Setup(r => r.Update(It.IsAny<Contact>(), It.IsAny<int>())).Returns(true)
+                .Callback<Contact, int>((x, y) => { contacts.Remove(contact); contacts.Add(x); });
+
+            rep.Setup(r => r.ContainsKey(It.IsAny<int>())).Returns<int>(
+               x => (contacts.Where(w => w.TaxId == x).Count() > 0));
+
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(true, returnValue);
+            Assert.AreEqual("new name", contacts[0].Name);
+            Assert.AreEqual("new title", ((WorkContact)contacts[0]).Title);
+            Assert.AreEqual("new co", ((WorkContact)contacts[0]).Company);
+            Assert.AreEqual("NewEmail@noreply.com", ((WorkContact)contacts[0]).EmailAddress);
+            Assert.AreEqual("www.newurl.com", ((WorkContact)contacts[0]).Url);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_EditNotFoundThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "edit", "2", "newName", "2" });
+            var contact = new FriendContact { Name = "name", TaxId = 1 };
+
+            List<Contact> contacts = new List<Contact>() { contact };
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Get(It.IsAny<int>()))
+             .Returns((int x) => contacts.Where(w => w.TaxId == x).FirstOrDefault());
+
+            rep.Setup(r => r.Update(It.IsAny<Contact>(), It.IsAny<int>())).Returns(true)
+                .Callback<Contact, int>((x, y) => { contacts.Remove(contact); contacts.Add(x); });
+
+            rep.Setup(r => r.ContainsKey(It.IsAny<int>())).Returns<int>(
+               x => (contacts.Where(w => w.TaxId == x).Count() > 0));
+
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_EditToDuplicateTaxIdThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "edit", "1", "newName", "2" });
+            var contact1 = new FriendContact { Name = "name", TaxId = 1 };
+            var contact2 = new FriendContact { Name = "name", TaxId = 2 };
+            List<Contact> contacts = new List<Contact>() { contact1,contact2 };
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Get(It.IsAny<int>()))
+             .Returns((int x) => contacts.Where(w => w.TaxId == x).FirstOrDefault());
+
+            rep.Setup(r => r.Update(It.IsAny<Contact>(), It.IsAny<int>())).Returns(true)
+                .Callback<Contact,int>((x,y) => {
+                    if(y != x.TaxId && contacts.Any(w => w.TaxId == y))
+                        throw new ArgumentException();
+                        });
+
+            rep.Setup(r => r.ContainsKey(It.IsAny<int>())).Returns<int>(
+               x => (contacts.Where(w => w.TaxId == x).Count() > 0));
+
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+            
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_EditWithNoArgsThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "edit", "1" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        public void ContactUiTest_DeleteSuccessful()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "delete", "1" });
+           
+            var contact = new FriendContact { Name = "name", TaxId = 1 };
+
+            List<Contact> contacts = new List<Contact>() { contact };
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Get(It.IsAny<int>()))
+             .Returns((int x) => contacts.Where(w => w.TaxId == x).FirstOrDefault());
+            rep.Setup(r => r.Remove(It.IsAny<Contact>())).Returns(true)
+             .Callback((Contact x) => contacts.Remove(x));
+
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(true, returnValue);
+            Assert.AreEqual(0, contacts.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_DeleteNotFoundThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "delete", "2" });
+            var contact = new FriendContact { Name = "name", TaxId = 1 };
+
+            List<Contact> contacts = new List<Contact>() { contact };
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Get(It.IsAny<int>()))
+             .Returns((int x) => contacts.Where(w => w.TaxId == x).FirstOrDefault());
+            rep.Setup(r => r.Remove(It.IsAny<Contact>())).Returns(true)
+             .Callback((Contact x) => contacts.Remove(x));
+
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+           
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_DeleteWithNoArgsThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "delete" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        public void ContactUiTest_SearchByNameSuccessful()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "search", "name", "name" });
+            var contact = new FriendContact { Name = "name", TaxId = 1 };
+
+            List<Contact> contacts = new List<Contact>() { contact };
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+
+            rep.Setup(r => r.Get(It.IsAny<int>()))
+             .Returns((int x) => contacts.Where(w => w.TaxId == x).FirstOrDefault());
+           
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(true, returnValue);
+            Assert.IsTrue(consoleInterface.Output.Contains("Friend"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_SearchByNameNotFoundThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "search", "name", "wrong" });
+           
+            var contact = new FriendContact { Name = "name", TaxId = 1 };
+            List<Contact> contacts = new List<Contact>() { contact };
+            Mock<IRepository<Contact>> rep = ContactsUiTest.mockRepository.Create<IRepository<Contact>>();
+            var contactsUi = new ContactsUi(consoleInterface, rep.Object);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        public void ContactUiTest_SearchByTaxIdSuccessful()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "search", "taxid", "1" });
+            var contactsUi = new ContactsUi(consoleInterface);
+            var contact = new FriendContact { Name = "name", TaxId = 1 };
+            contactsUi.AddressBook.Add(contact);
+
+            //Act
+            var returnValue = contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(true, returnValue);
+            Assert.IsTrue(consoleInterface.Output.Contains("Friend"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_SearchByBadTypeThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "search", "hahaha", "2" });
+            var contactsUi = new ContactsUi(consoleInterface);
+            var contact = new FriendContact { Name = "name", TaxId = 1 };
+            contactsUi.AddressBook.Add(contact);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_SearchByTaxIdNotFoundThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "search", "taxid", "2" });
+            var contactsUi = new ContactsUi(consoleInterface);
+            var contact = new FriendContact { Name = "name", TaxId = 1 };
+            contactsUi.AddressBook.Add(contact);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ContactUiTest_SearchWithNoArgsThrowsArgumentException()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "search" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+        }
+
+        [TestMethod]
+        public void ContactUiTest_PrintSuccessful()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "print" });
+            var contactsUi = new ContactsUi(consoleInterface);
+            Contact contact = new FriendContact { Name = "name", TaxId = 1 };
+            contactsUi.AddressBook.Add(contact);
+            contact = new WorkContact { Name = "name", TaxId = 2 };
+            contactsUi.AddressBook.Add(contact);
+            contact = new CompanyContact { Name = "name", TaxId = 3 };
+            contactsUi.AddressBook.Add(contact);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.IsTrue(consoleInterface.Output.Contains(
+                "Friend\r\n-------\r\nName: name\r\nTax ID: 1\r\nAddress: \r\nPhone Number: \r\nEmail Address: \r\nBirthday: \r\nDate Created:"
+                ));
+            Assert.IsTrue(consoleInterface.Output.Contains(
+                "Work\r\n-------\r\nName: name\r\nTax ID: 2\r\nAddress: \r\nPhone Number: \r\nTitle: \r\nCompany: \r\nEmail Address: \r\nURL: \r\nDate Created:"
+                ));
+            Assert.IsTrue(consoleInterface.Output.Contains(
+                "Company\r\n-------\r\nName: name\r\nTax ID: 3\r\nAddress: \r\nPhone Number: \r\nURL: \r\nDate Created: "
+                ));
+        }
+
+        [TestMethod]
+        public void ContactUiTest_PrintEmptyAddressBookWritesMessage()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "print" });
+            var contactsUi = new ContactsUi(consoleInterface);
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual("Address book is empty\r\n", consoleInterface.Output);
+        }
+
+        [TestMethod]
+        public void ContactUiTest_HelpDisplayedForHelpCommand()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "help" });
+            var contactsUi = new ContactsUi(consoleInterface);
+            var expectedOutput = this.CreateExpectedHelpOutput();
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(expectedOutput, consoleInterface.Output);
+        }
+
+        [TestMethod]
+        public void ContactUiTest_HelpDisplayedForBadCommand()
+        {
+            //Arrange
+            var consoleInterface = new FakeConsoleInterface(new[] { "wootwootwoot" });
+            var contactsUi = new ContactsUi(consoleInterface);
+            var expectedOutput = this.CreateExpectedHelpOutput();
+
+            //Act
+            contactsUi.ProcessLineCommand();
+
+            //Assert
+            Assert.AreEqual(expectedOutput, consoleInterface.Output);
+        }
+
+        private string CreateExpectedHelpOutput()
+        {
+            var expectedOutput = new StringBuilder();
+
+            var help = new[]
+                {
+                    string.Empty,
+                    "Valid commands:",
+                    string.Empty,
+                    "  add friend <name*> <tax ID*> ... (fields as prompted)",
+                    "  add work <name*> <tax ID*> ... (fields as prompted)",
+                    "  add company <name*> <tax ID*> ... (fields as prompted)",
+                    "  search Name <name*>",
+                    "  search TaxID <tax ID*>",
+                    "  edit <current tax ID*> <name*> <tax ID*> ... (fields as prompted)",
+                    "  delete <tax ID*>",
+                    "  print",
+                    string.Empty,
+                    "NOTE: * = required, [] = optional",
+                    "All fields except address must be a single word (no spaces)",
+                    string.Empty
+                };
+
+            foreach (string h in help)
+            {
+                expectedOutput.Append(h);
+                expectedOutput.Append("\r\n");
+            }
+
+            return expectedOutput.ToString();
+           }
+        }
+}
